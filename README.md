@@ -2,6 +2,9 @@
 
 A simple URL shortener application built with Java, Spring Boot, and Vue.js.
 
+![Image 1](./img/n1.png)
+![Image 2](./img/n2.png)
+
 ## Features
 
 - Shorten long URLs
