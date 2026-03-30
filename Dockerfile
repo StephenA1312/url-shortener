@@ -12,11 +12,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ENV DATABASE_PATH=./data/url-shortener.db
 ENV BASE_URL=https://url.stephen-ali.com
 
-RUN mkdir -p data
-RUN npx drizzle-kit push
 RUN npm run build
 
 # Production runner
