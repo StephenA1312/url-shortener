@@ -51,10 +51,6 @@ export function PasteReveal({ slug }: { slug: string }) {
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="text-xs text-zinc-500">
-            Clicking Reveal keeps bots from consuming your paste. Once the POST
-            succeeds the content disappears from the server.
-          </p>
           <button
             type="button"
             onClick={handleReveal}
