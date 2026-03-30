@@ -27,12 +27,12 @@ ENV BASE_URL=https://url.stephen-ali.com
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy standalone output
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+# Copy standalone output (nested under package name)
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/url-shortener ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Create data directory for SQLite and set ownership
+# Create writable data directory for SQLite
 RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
 
 USER nextjs
