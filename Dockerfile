@@ -16,6 +16,16 @@ ENV BASE_URL=https://url.stephen-ali.com
 
 RUN npm run build
 
+# Flatten standalone output — server.js may be nested under a subdir
+RUN if [ -f .next/standalone/server.js ]; then \
+      echo "standalone at root"; \
+    else \
+      mv .next/standalone/*/server.js .next/standalone/ 2>/dev/null; \
+      cp -r .next/standalone/*/node_modules .next/standalone/ 2>/dev/null; \
+      cp -r .next/standalone/*/.next .next/standalone/ 2>/dev/null; \
+      rm -rf .next/standalone/*/; \
+    fi
+
 # Production runner
 FROM base AS runner
 WORKDIR /app
@@ -27,8 +37,8 @@ ENV BASE_URL=https://url.stephen-ali.com
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy standalone output (nested under package name)
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/url-shortener ./
+# Copy standalone output
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
