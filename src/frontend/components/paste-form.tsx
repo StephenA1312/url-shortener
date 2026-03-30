@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PasteResultCard } from "./paste-result-card";
 
 interface PasteResult {
@@ -12,6 +12,8 @@ interface PasteResult {
 
 export function PasteForm() {
   const [content, setContent] = useState("");
+  const [autoCopied, setAutoCopied] = useState(false);
+  const autoCopyTimer = useRef<number | null>(null);
   const [customSlug, setCustomSlug] = useState("");
   const [viewOnce, setViewOnce] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -22,6 +24,7 @@ export function PasteForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setAutoCopied(false);
     setResult(null);
     setLoading(true);
 
@@ -47,12 +50,30 @@ export function PasteForm() {
       setContent("");
       setCustomSlug("");
       setViewOnce(false);
+      await copyLink(data.pasteUrl);
     } catch {
       setError("Failed to connect to the server.");
     } finally {
       setLoading(false);
     }
   }
+
+  async function copyLink(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      if (autoCopyTimer.current) window.clearTimeout(autoCopyTimer.current);
+      setAutoCopied(true);
+      autoCopyTimer.current = window.setTimeout(() => setAutoCopied(false), 2000);
+    } catch {
+      setAutoCopied(false);
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if (autoCopyTimer.current) window.clearTimeout(autoCopyTimer.current);
+    };
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -124,7 +145,14 @@ export function PasteForm() {
         </p>
       )}
 
-      {result && <PasteResultCard result={result} />}
+      {result && (
+        <>
+          <PasteResultCard result={result} />
+          {autoCopied && (
+            <p className="text-xs text-green-400">Link copied to clipboard.</p>
+          )}
+        </>
+      )}
     </div>
   );
 }
