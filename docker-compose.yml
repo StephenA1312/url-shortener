@@ -1,0 +1,14 @@
+services:
+  url-shortener:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - url-data:/app/data
+    environment:
+      - DATABASE_PATH=/app/data/url-shortener.db
+      - BASE_URL=https://url.stephen-ali.com
+    restart: unless-stopped
+
+volumes:
+  url-data:
