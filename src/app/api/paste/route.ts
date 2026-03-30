@@ -1,7 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createPaste } from "@/backend/lib/pastes";
+import { checkRateLimit } from "@/backend/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const { allowed, retryAfter } = checkRateLimit(ip);
+
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(retryAfter) } }
+    );
+  }
+
   try {
     const body = await request.json();
     const { content, customSlug, viewOnce } = body;

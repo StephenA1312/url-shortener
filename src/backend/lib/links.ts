@@ -2,6 +2,7 @@ import { db } from "@/backend/db";
 import { links, clicks } from "@/backend/db/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { generateShortCode } from "./short-code";
+import { validateUrl } from "./url-validation";
 
 const RESERVED_CODES = ["api", "stats", "expired", "paste", "_next", "favicon.ico"];
 
@@ -22,15 +23,9 @@ export function createLink(
     );
   }
 
-  try {
-    new URL(url);
-  } catch {
-    throw new Error("Invalid URL.");
-  }
-
-  const parsed = new URL(url);
-  if (!["http:", "https:"].includes(parsed.protocol)) {
-    throw new Error("URL must use http or https protocol.");
+  const urlError = validateUrl(url);
+  if (urlError) {
+    throw new Error(urlError);
   }
 
   const existing = db

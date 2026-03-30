@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { findPasteBySlug, markPasteViewed } from "@/backend/lib/pastes";
+import { findPasteBySlug, consumeViewOncePaste } from "@/backend/lib/pastes";
 import Link from "next/link";
 import { CopyButton } from "@/frontend/components/copy-button";
 
@@ -15,30 +15,53 @@ export default async function PastePage({
 
   if (!paste) notFound();
 
-  if (paste.viewOnce && paste.viewed) {
-    return (
-      <main className="flex-1 flex items-center justify-center px-4 py-16">
-        <div className="text-center space-y-4">
-          <div className="text-5xl">&#128065;</div>
-          <h1 className="text-2xl font-bold">This paste has been viewed</h1>
-          <p className="text-zinc-400 max-w-sm">
-            This was a view-once paste and has already been read. The content is
-            no longer available.
-          </p>
-          <Link
-            href="/"
-            className="inline-block mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-colors"
-          >
-            Create a new paste
-          </Link>
-        </div>
-      </main>
-    );
-  }
+  let content = paste.content;
 
-  // Mark as viewed if view-once
   if (paste.viewOnce) {
-    markPasteViewed(paste.id);
+    if (paste.viewed) {
+      return (
+        <main className="flex-1 flex items-center justify-center px-4 py-16">
+          <div className="text-center space-y-4">
+            <div className="text-5xl">&#128065;</div>
+            <h1 className="text-2xl font-bold">This paste has been viewed</h1>
+            <p className="text-zinc-400 max-w-sm">
+              This was a view-once paste and has already been read. The content
+              is no longer available.
+            </p>
+            <Link
+              href="/"
+              className="inline-block mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-colors"
+            >
+              Create a new paste
+            </Link>
+          </div>
+        </main>
+      );
+    }
+
+    // Atomically consume — only one request gets the content
+    const consumed = consumeViewOncePaste(paste.id);
+    if (!consumed) {
+      return (
+        <main className="flex-1 flex items-center justify-center px-4 py-16">
+          <div className="text-center space-y-4">
+            <div className="text-5xl">&#128065;</div>
+            <h1 className="text-2xl font-bold">This paste has been viewed</h1>
+            <p className="text-zinc-400 max-w-sm">
+              This was a view-once paste and has already been read. The content
+              is no longer available.
+            </p>
+            <Link
+              href="/"
+              className="inline-block mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-colors"
+            >
+              Create a new paste
+            </Link>
+          </div>
+        </main>
+      );
+    }
+    content = consumed;
   }
 
   return (
@@ -66,16 +89,16 @@ export default async function PastePage({
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800">
             <span className="text-sm text-zinc-400 font-mono">/{slug}</span>
-            <CopyButton text={paste.content} />
+            <CopyButton text={content} />
           </div>
           <pre className="p-4 text-sm text-zinc-300 overflow-x-auto whitespace-pre-wrap break-words font-mono leading-relaxed">
-            {paste.content}
+            {content}
           </pre>
         </div>
 
         {paste.viewOnce && (
           <p className="text-center text-xs text-red-400">
-            This paste will be deleted after you leave this page.
+            This paste will not be available after you leave this page.
           </p>
         )}
       </div>

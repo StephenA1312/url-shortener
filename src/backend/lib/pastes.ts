@@ -1,4 +1,4 @@
-import { db } from "@/backend/db";
+import { db, sqlite } from "@/backend/db";
 import { pastes } from "@/backend/db/schema";
 import { links } from "@/backend/db/schema";
 import { eq } from "drizzle-orm";
@@ -66,9 +66,14 @@ export function findPasteBySlug(slug: string) {
     .get();
 }
 
-export function markPasteViewed(id: number) {
-  db.update(pastes)
-    .set({ viewed: true })
-    .where(eq(pastes.id, id))
-    .run();
+/**
+ * Atomically marks a view-once paste as viewed and returns the original content.
+ * Uses raw SQL so the WHERE clause ensures only one request can "win".
+ */
+export function consumeViewOncePaste(id: number): string | null {
+  const stmt = sqlite.prepare(
+    `UPDATE pastes SET viewed = 1 WHERE id = ? AND viewed = 0 RETURNING content`
+  );
+  const row = stmt.get(id) as { content: string } | undefined;
+  return row ? row.content : null;
 }

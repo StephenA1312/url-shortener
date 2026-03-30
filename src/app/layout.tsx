@@ -13,8 +13,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "URL Shortener",
-  description: "Shorten any link instantly",
+  title: "Shortener-Paste",
+  description: "Shorten links & share text instantly",
+  metadataBase: new URL(
+    process.env.BASE_URL || "https://url.stephen-ali.com"
+  ),
+  openGraph: {
+    title: "Shortener-Paste",
+    description: "Shorten links & share text instantly",
+    url: "/",
+    siteName: "Shortener-Paste",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Shortener-Paste",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shortener-Paste",
+    description: "Shorten links & share text instantly",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({

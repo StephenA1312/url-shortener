@@ -44,4 +44,5 @@ sqlite.exec(`
   );
 `);
 
+export { sqlite };
 export const db = drizzle(sqlite, { schema });
