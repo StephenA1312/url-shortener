@@ -34,6 +34,14 @@ sqlite.exec(`
     user_agent TEXT,
     ip_address TEXT
   );
+  CREATE TABLE IF NOT EXISTS pastes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug TEXT NOT NULL UNIQUE,
+    content TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    view_once INTEGER NOT NULL DEFAULT 0,
+    viewed INTEGER NOT NULL DEFAULT 0
+  );
 `);
 
 export const db = drizzle(sqlite, { schema });

@@ -25,6 +25,17 @@ export const clicks = sqliteTable("clicks", {
   ipAddress: text("ip_address"),
 });
 
+export const pastes = sqliteTable("pastes", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  slug: text("slug").notNull().unique(),
+  content: text("content").notNull(),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+  viewOnce: integer("view_once", { mode: "boolean" }).notNull().default(false),
+  viewed: integer("viewed", { mode: "boolean" }).notNull().default(false),
+});
+
 export const linksRelations = relations(links, ({ many }) => ({
   clicks: many(clicks),
 }));

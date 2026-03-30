@@ -3,7 +3,7 @@ import { links, clicks } from "@/backend/db/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { generateShortCode } from "./short-code";
 
-const RESERVED_CODES = ["api", "stats", "expired", "_next", "favicon.ico"];
+const RESERVED_CODES = ["api", "stats", "expired", "paste", "_next", "favicon.ico"];
 
 export function createLink(
   url: string,
