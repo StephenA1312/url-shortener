@@ -14,13 +14,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Shortener-Paste",
-  description: "Shorten links & share text instantly",
+  description: "Shorten links & share text instantly :)",
   metadataBase: new URL(
     process.env.BASE_URL || "https://url.stephen-ali.com"
   ),
   openGraph: {
     title: "Shortener-Paste",
-    description: "Shorten links & share text instantly",
+    description: "Shorten links & share text instantly :)",
     url: "/",
     siteName: "Shortener-Paste",
     images: [
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Shortener-Paste",
-    description: "Shorten links & share text instantly",
+    description: "Shorten links & share text instantly :)",
     images: ["/og-image.png"],
   },
 };
