@@ -92,9 +92,18 @@ export function PasteForm() {
         <button
           type="button"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="text-sm text-zinc-400 hover:text-zinc-300 transition-colors"
+          className="flex items-center gap-1 text-sm text-zinc-400 hover:text-zinc-300 transition-colors"
         >
-          {showAdvanced ? "- Hide" : "+ Show"} options
+          <svg
+            className={`w-3.5 h-3.5 transition-transform duration-200 ${showAdvanced ? "rotate-180" : ""}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+          {showAdvanced ? "Hide" : "Show"} options
         </button>
 
         {showAdvanced && (
@@ -133,8 +142,14 @@ export function PasteForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-medium rounded-lg px-6 py-3 transition-colors"
+          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-medium rounded-lg px-6 py-3 transition-colors"
         >
+          {loading && (
+            <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+          )}
           {loading ? "Creating..." : "Create Paste"}
         </button>
       </form>

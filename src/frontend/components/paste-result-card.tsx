@@ -20,7 +20,7 @@ export function PasteResultCard({ result }: PasteResultCardProps) {
   }
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-3">
+    <div className="bg-zinc-800/50 border border-zinc-700/60 rounded-xl p-5 space-y-3">
       <p className="text-sm text-zinc-400">Your paste link</p>
       <div className="flex items-center gap-3">
         <code className="text-lg font-mono text-blue-400 flex-1 truncate">
