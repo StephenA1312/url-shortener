@@ -25,6 +25,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (expiresAt) {
+      const date = new Date(expiresAt);
+      if (isNaN(date.getTime())) {
+        return NextResponse.json(
+          { error: "Invalid expiration date." },
+          { status: 400 }
+        );
+      }
+      if (date <= new Date()) {
+        return NextResponse.json(
+          { error: "Expiration date must be in the future." },
+          { status: 400 }
+        );
+      }
+    }
+
     const link = createLink(url, customCode || undefined, expiresAt || undefined);
     const baseUrl = process.env.BASE_URL || "http://localhost:3000";
 

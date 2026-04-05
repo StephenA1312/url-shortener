@@ -28,7 +28,7 @@ export function PasteResultCard({ result }: PasteResultCardProps) {
         </code>
         <button
           onClick={copyToClipboard}
-          className="shrink-0 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-sm transition-colors"
+          className="shrink-0 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           {copied ? "Copied!" : "Copy"}
         </button>
