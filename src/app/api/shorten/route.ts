@@ -4,8 +4,11 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = (await request.json()) as Record<string, unknown>;
-    const { url, customCode, expiresAt } = body;
+    const { url, customCode, expiresAt } = (await request.json()) as {
+      url?: string;
+      customCode?: string;
+      expiresAt?: string;
+    };
 
     if (!url || typeof url !== "string") {
       return NextResponse.json(
