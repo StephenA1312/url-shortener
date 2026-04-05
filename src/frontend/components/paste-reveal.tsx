@@ -21,11 +21,11 @@ export function PasteReveal({ slug }: { slug: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slug }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { content?: string; error?: string };
       if (!res.ok) {
         throw new Error(data.error || "Unable to reveal the paste.");
       }
-      setContent(data.content);
+      setContent(data.content ?? null);
       setStatus("ready");
     } catch (err) {
       const message =

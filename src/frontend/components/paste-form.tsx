@@ -39,7 +39,7 @@ export function PasteForm() {
         body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      const data = (await res.json()) as PasteResult & { error?: string };
 
       if (!res.ok) {
         setError(data.error || "Something went wrong.");
