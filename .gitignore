@@ -40,6 +40,7 @@ yarn-error.log*
 # Cloudflare / OpenNext build output
 /.open-next/
 /.wrangler/
+/worker-configuration.d.ts
 
 # SQLite database (legacy)
 /data/*.db
