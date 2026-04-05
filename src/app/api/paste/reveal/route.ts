@@ -3,11 +3,8 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { findPasteBySlug } from "@/backend/lib/pastes";
 
 export async function POST(request: NextRequest) {
-  const body = await request.json().catch(() => null);
-  const slug =
-    typeof body === "object" && body !== null && typeof body.slug === "string"
-      ? body.slug
-      : null;
+  const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
+  const slug = typeof body?.slug === "string" ? body.slug : null;
 
   if (!slug) {
     return NextResponse.json(
