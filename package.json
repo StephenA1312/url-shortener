@@ -19,6 +19,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240208.0",
     "@opennextjs/cloudflare": "^1.18.0",
+    "esbuild": "^0.25.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -27,6 +28,6 @@
     "eslint-config-next": "16.2.1",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "wrangler": "^4.0.0"
+    "wrangler": "^4.65.0"
   }
 }
