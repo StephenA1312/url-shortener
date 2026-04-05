@@ -79,14 +79,20 @@ export function PasteForm() {
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Paste your text here..."
-            required
-            rows={8}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm resize-y"
-          />
+          <div className="relative">
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Paste your text here..."
+              required
+              rows={8}
+              maxLength={100000}
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm resize-y"
+            />
+            <span className={`absolute bottom-2 right-3 text-xs tabular-nums ${content.length > 90000 ? 'text-red-400' : 'text-zinc-500'}`}>
+              {(content.length / 1024).toFixed(1)} KB / 100 KB
+            </span>
+          </div>
         </div>
 
         <button

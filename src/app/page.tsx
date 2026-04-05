@@ -6,7 +6,7 @@ export default function Home() {
       <div className="w-full max-w-lg space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-bold tracking-tight">Shortener-Paste</h1>
-          <p className="text-zinc-400">Shorten links & share text instantly :L</p>
+          <p className="text-zinc-400">Shorten links & share text instantly :)</p>
         </div>
 
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
