@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { findPasteBySlug, consumeViewOncePaste } from "@/backend/lib/pastes";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { findPasteBySlug } from "@/backend/lib/pastes";
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
@@ -15,7 +16,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const paste = findPasteBySlug(slug);
+  const { env } = getCloudflareContext();
+  const paste = await findPasteBySlug(env.URL_STORE, slug);
+
   if (!paste) {
     return NextResponse.json({ error: "Paste not found." }, { status: 404 });
   }
@@ -34,13 +37,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const content = consumeViewOncePaste(paste.id);
-  if (!content) {
-    return NextResponse.json(
-      { error: "This paste has already been viewed." },
-      { status: 410 }
-    );
-  }
+  // Mark as viewed. KV read-modify-write is not atomic; for a single-user
+  // personal tool the race window is negligible.
+  paste.viewed = true;
+  await env.URL_STORE.put(`paste:${slug}`, JSON.stringify(paste));
 
-  return NextResponse.json({ content });
+  return NextResponse.json({ content: paste.content });
 }

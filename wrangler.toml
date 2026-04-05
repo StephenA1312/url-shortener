@@ -1,0 +1,25 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "url-shortener"
+account_id = "1d843c7474bdf3466b3b2a0eb3f8297b"
+main = ".open-next/worker.js"
+compatibility_date = "2024-12-30"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+# Run: wrangler kv namespace create URL_STORE
+# Then replace the placeholder IDs below with the real ones.
+[[kv_namespaces]]
+binding = "URL_STORE"
+id = "b72cc634ba7547869c49c12e595e1fc6"
+preview_id = "b72cc634ba7547869c49c12e595e1fc6"
+
+[[kv_namespaces]]
+binding = "CLICK_STORE"
+id = "6cd613aa596d4c9fbda59f81306d7908"
+preview_id = "6cd613aa596d4c9fbda59f81306d7908"
+
+[vars]
+BASE_URL = "https://url.stephen-ali.com"
