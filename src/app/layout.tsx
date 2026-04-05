@@ -46,16 +46,15 @@ const themeScript = `
 (function(){
   try {
     var t = localStorage.getItem('theme');
+    var d;
     if (t === 'light' || t === 'dark') {
-      document.documentElement.className = t;
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.className = 'dark';
+      d = t === 'dark';
     } else {
-      document.documentElement.className = 'light';
+      d = window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
-  } catch(e) {
-    document.documentElement.className = 'light';
-  }
+    document.documentElement.classList.toggle('dark', d);
+    document.documentElement.classList.toggle('light', !d);
+  } catch(e) {}
 })();
 `;
 
