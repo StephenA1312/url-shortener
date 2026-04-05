@@ -96,14 +96,14 @@ export function ShortenForm() {
             onChange={(e) => setUrl(e.target.value)}
             placeholder="https://example.com/very-long-url"
             required
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-4 py-3 text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
 
         <button
           type="button"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="flex items-center gap-1 text-sm text-zinc-400 hover:text-zinc-300 transition-colors"
+          className="flex items-center gap-1 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
         >
           <svg
             className={`w-3.5 h-3.5 transition-transform duration-200 ${showAdvanced ? "rotate-180" : ""}`}
@@ -118,9 +118,9 @@ export function ShortenForm() {
         </button>
 
         {showAdvanced && (
-          <div className="space-y-3 pl-4 border-l-2 border-zinc-800">
+          <div className="space-y-3 pl-4 border-l-2 border-zinc-200 dark:border-zinc-800">
             <div>
-              <label className="block text-sm text-zinc-400 mb-1">
+              <label className="block text-sm text-zinc-500 dark:text-zinc-400 mb-1">
                 Custom short code
               </label>
               <input
@@ -130,18 +130,18 @@ export function ShortenForm() {
                 placeholder="my-custom-slug"
                 pattern="[a-zA-Z0-9\-]{3,32}"
                 title="3-32 characters, letters, numbers, and hyphens only"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
             </div>
             <div>
-              <label className="block text-sm text-zinc-400 mb-1">
+              <label className="block text-sm text-zinc-500 dark:text-zinc-400 mb-1">
                 Expiration date
               </label>
               <input
                 type="datetime-local"
                 value={expiresAt}
                 onChange={(e) => setExpiresAt(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm [color-scheme:dark]"
+                className="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm [color-scheme:light] dark:[color-scheme:dark]"
               />
             </div>
           </div>
@@ -163,7 +163,7 @@ export function ShortenForm() {
       </form>
 
       {error && (
-        <p className="text-red-400 text-sm bg-red-950/50 border border-red-900 rounded-lg px-4 py-3">
+        <p className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 rounded-lg px-4 py-3">
           {error}
         </p>
       )}
@@ -172,7 +172,7 @@ export function ShortenForm() {
         <>
           <ResultCard result={result} />
           {autoCopied && (
-            <p className="text-xs text-green-400">Link copied to clipboard.</p>
+            <p className="text-xs text-green-600 dark:text-green-400">Link copied to clipboard.</p>
           )}
         </>
       )}

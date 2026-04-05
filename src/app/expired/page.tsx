@@ -12,10 +12,10 @@ export default async function ExpiredPage({
       <div className="text-center space-y-4">
         <div className="text-5xl">&#9203;</div>
         <h1 className="text-2xl font-bold">Link Expired</h1>
-        <p className="text-zinc-400 max-w-sm">
+        <p className="text-zinc-500 dark:text-zinc-400 max-w-sm">
           The short link{" "}
           {code && (
-            <code className="text-zinc-300 font-mono">/{code}</code>
+            <code className="text-zinc-700 dark:text-zinc-300 font-mono">/{code}</code>
           )}{" "}
           has expired and is no longer available.
         </p>
