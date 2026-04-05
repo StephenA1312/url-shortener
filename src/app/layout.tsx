@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeToggle } from "@/frontend/components/theme-toggle";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -41,6 +42,23 @@ export const metadata: Metadata = {
   },
 };
 
+const themeScript = `
+(function(){
+  try {
+    var t = localStorage.getItem('theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.className = t;
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.className = 'dark';
+    } else {
+      document.documentElement.className = 'light';
+    }
+  } catch(e) {
+    document.documentElement.className = 'light';
+  }
+})();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -50,8 +68,15 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="min-h-full flex flex-col">
+        <ThemeToggle />
+        {children}
+      </body>
     </html>
   );
 }

@@ -87,9 +87,9 @@ export function PasteForm() {
               required
               rows={8}
               maxLength={100000}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm resize-y"
+              className="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-4 py-3 text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm resize-y"
             />
-            <span className={`absolute bottom-2 right-3 text-xs tabular-nums ${content.length > 90000 ? 'text-red-400' : 'text-zinc-500'}`}>
+            <span className={`absolute bottom-2 right-3 text-xs tabular-nums ${content.length > 90000 ? 'text-red-500 dark:text-red-400' : 'text-zinc-400 dark:text-zinc-500'}`}>
               {(content.length / 1024).toFixed(1)} KB / 100 KB
             </span>
           </div>
@@ -98,7 +98,7 @@ export function PasteForm() {
         <button
           type="button"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="flex items-center gap-1 text-sm text-zinc-400 hover:text-zinc-300 transition-colors"
+          className="flex items-center gap-1 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
         >
           <svg
             className={`w-3.5 h-3.5 transition-transform duration-200 ${showAdvanced ? "rotate-180" : ""}`}
@@ -113,9 +113,9 @@ export function PasteForm() {
         </button>
 
         {showAdvanced && (
-          <div className="space-y-3 pl-4 border-l-2 border-zinc-800">
+          <div className="space-y-3 pl-4 border-l-2 border-zinc-200 dark:border-zinc-800">
             <div>
-              <label className="block text-sm text-zinc-400 mb-1">
+              <label className="block text-sm text-zinc-500 dark:text-zinc-400 mb-1">
                 Custom slug
               </label>
               <input
@@ -125,7 +125,7 @@ export function PasteForm() {
                 placeholder="my-paste"
                 pattern="[a-zA-Z0-9\-]{3,32}"
                 title="3-32 characters, letters, numbers, and hyphens only"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
             </div>
             <label className="flex items-center gap-3 cursor-pointer">
@@ -133,11 +133,11 @@ export function PasteForm() {
                 type="checkbox"
                 checked={viewOnce}
                 onChange={(e) => setViewOnce(e.target.checked)}
-                className="w-4 h-4 rounded border-zinc-700 bg-zinc-800 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 accent-blue-500"
+                className="w-4 h-4 rounded border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 accent-blue-500"
               />
               <div>
-                <span className="text-sm text-zinc-300">View once</span>
-                <p className="text-xs text-zinc-500">
+                <span className="text-sm text-zinc-700 dark:text-zinc-300">View once</span>
+                <p className="text-xs text-zinc-400 dark:text-zinc-500">
                   Content is deleted after being viewed
                 </p>
               </div>
@@ -161,7 +161,7 @@ export function PasteForm() {
       </form>
 
       {error && (
-        <p className="text-red-400 text-sm bg-red-950/50 border border-red-900 rounded-lg px-4 py-3">
+        <p className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 rounded-lg px-4 py-3">
           {error}
         </p>
       )}
@@ -170,7 +170,7 @@ export function PasteForm() {
         <>
           <PasteResultCard result={result} />
           {autoCopied && (
-            <p className="text-xs text-green-400">Link copied to clipboard.</p>
+            <p className="text-xs text-green-600 dark:text-green-400">Link copied to clipboard.</p>
           )}
         </>
       )}

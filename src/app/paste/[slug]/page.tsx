@@ -23,7 +23,7 @@ export default async function PastePage({
         <div className="text-center space-y-4">
           <div className="text-5xl">&#128065;</div>
           <h1 className="text-2xl font-bold">This paste has been viewed</h1>
-          <p className="text-zinc-400 max-w-sm">
+          <p className="text-zinc-500 dark:text-zinc-400 max-w-sm">
             This was a view-once paste and has already been read. The content is
             no longer available.
           </p>
@@ -46,38 +46,38 @@ export default async function PastePage({
         <div className="flex items-center justify-between">
           <Link
             href="/"
-            className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+            className="text-sm text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
           >
             &larr; Back
           </Link>
           <div className="flex items-center gap-3">
             {paste.viewOnce && (
-              <span className="text-xs bg-red-950/50 border border-red-900 text-red-400 px-2.5 py-1 rounded-full">
+              <span className="text-xs bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 px-2.5 py-1 rounded-full">
                 View once
               </span>
             )}
-            <span className="text-xs text-zinc-500">
+            <span className="text-xs text-zinc-400 dark:text-zinc-500">
               {new Date(paste.createdAt).toLocaleDateString()}
             </span>
           </div>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800">
-            <span className="text-sm text-zinc-400 font-mono">/{slug}</span>
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-200 dark:border-zinc-800">
+            <span className="text-sm text-zinc-500 dark:text-zinc-400 font-mono">/{slug}</span>
             {!awaitsReveal && <CopyButton text={paste.content} />}
           </div>
           {awaitsReveal ? (
             <PasteReveal slug={slug} />
           ) : (
-            <pre className="p-4 text-sm text-zinc-300 overflow-x-auto whitespace-pre-wrap break-words font-mono leading-relaxed">
+            <pre className="p-4 text-sm text-zinc-700 dark:text-zinc-300 overflow-x-auto whitespace-pre-wrap break-words font-mono leading-relaxed">
               {paste.content}
             </pre>
           )}
         </div>
 
         {paste.viewOnce && (
-          <p className="text-center text-xs text-red-400">
+          <p className="text-center text-xs text-red-600 dark:text-red-400">
             This paste will not be available after you leave this page.
           </p>
         )}

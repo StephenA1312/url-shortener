@@ -36,16 +36,16 @@ export function PasteReveal({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="p-4 text-sm text-zinc-300 space-y-4">
+    <div className="p-4 text-sm text-zinc-700 dark:text-zinc-300 space-y-4">
       {content ? (
         <div className="space-y-3">
-          <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-            <span className="text-xs text-zinc-500 tracking-wide uppercase">
+          <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
+            <span className="text-xs text-zinc-400 dark:text-zinc-500 tracking-wide uppercase">
               Reveal ready
             </span>
             <CopyButton text={content} />
           </div>
-          <pre className="p-2 bg-black/30 rounded-md overflow-x-auto whitespace-pre-wrap break-words font-mono leading-relaxed">
+          <pre className="p-2 bg-zinc-100 dark:bg-black/30 rounded-md overflow-x-auto whitespace-pre-wrap break-words font-mono leading-relaxed">
             {content}
           </pre>
         </div>
@@ -60,7 +60,7 @@ export function PasteReveal({ slug }: { slug: string }) {
             {status === "loading" ? "Revealing..." : "Reveal content"}
           </button>
           {status === "error" && error && (
-            <p className="text-xs text-red-400">{error}</p>
+            <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
           )}
         </div>
       )}
