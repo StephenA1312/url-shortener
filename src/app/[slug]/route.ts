@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { findByCode, isExpired, recordClick } from "@/backend/lib/links";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
+  const { env } = getCloudflareContext();
 
-  const link = findByCode(slug);
+  const link = await findByCode(env.URL_STORE, slug);
 
   if (!link) {
     return new NextResponse("Link not found.", { status: 404 });
@@ -25,7 +27,7 @@ export async function GET(
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
 
-  recordClick(link.id, referrer, userAgent, ip);
+  await recordClick(env.URL_STORE, env.CLICK_STORE, slug, referrer, userAgent, ip);
 
   return NextResponse.redirect(link.originalUrl, 302);
 }

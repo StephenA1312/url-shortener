@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createLink } from "@/backend/lib/links";
-import { checkRateLimit } from "@/backend/lib/rate-limit";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 export async function POST(request: NextRequest) {
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  const { allowed, retryAfter } = checkRateLimit(ip);
-
-  if (!allowed) {
-    return NextResponse.json(
-      { error: "Too many requests. Please try again later." },
-      { status: 429, headers: { "Retry-After": String(retryAfter) } }
-    );
-  }
-
   try {
     const body = await request.json();
     const { url, customCode, expiresAt } = body;
@@ -41,7 +30,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const link = createLink(url, customCode || undefined, expiresAt || undefined);
+    const { env } = getCloudflareContext();
+    const link = await createLink(
+      env.URL_STORE,
+      url,
+      customCode || undefined,
+      expiresAt || undefined
+    );
     const baseUrl = process.env.BASE_URL || "http://localhost:3000";
 
     return NextResponse.json({

@@ -32,11 +32,16 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.dev.vars
 
 # vercel
 .vercel
 
-# SQLite database
+# Cloudflare / OpenNext build output
+/.open-next/
+/.wrangler/
+
+# SQLite database (legacy)
 /data/*.db
 /data/*.db-wal
 /data/*.db-shm

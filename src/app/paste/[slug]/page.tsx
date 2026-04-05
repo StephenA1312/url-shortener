@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { findPasteBySlug } from "@/backend/lib/pastes";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { CopyButton } from "@/frontend/components/copy-button";
 import { PasteReveal } from "@/frontend/components/paste-reveal";
@@ -12,7 +13,8 @@ export default async function PastePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const paste = findPasteBySlug(slug);
+  const { env } = getCloudflareContext();
+  const paste = await findPasteBySlug(env.URL_STORE, slug);
 
   if (!paste) notFound();
 

@@ -1,16 +1,15 @@
-import { db } from "@/backend/db";
-import { links, clicks } from "@/backend/db/schema";
-import { eq, desc, sql } from "drizzle-orm";
 import { generateShortCode } from "./short-code";
 import { validateUrl } from "./url-validation";
+import type { LinkRecord, ClickRecord, StatsResult, ReferrerStat } from "@/backend/types";
 
 const RESERVED_CODES = ["api", "stats", "expired", "paste", "_next", "favicon.ico"];
 
-export function createLink(
+export async function createLink(
+  urlStore: KVNamespace,
   url: string,
   customCode?: string,
   expiresAt?: string
-) {
+): Promise<LinkRecord> {
   const shortCode = customCode || generateShortCode();
 
   if (RESERVED_CODES.includes(shortCode)) {
@@ -28,86 +27,91 @@ export function createLink(
     throw new Error(urlError);
   }
 
-  const existing = db
-    .select()
-    .from(links)
-    .where(eq(links.shortCode, shortCode))
-    .get();
-
+  const existing = await urlStore.get(`link:${shortCode}`);
   if (existing) {
     throw new Error("This short code is already taken.");
   }
 
-  const result = db
-    .insert(links)
-    .values({
-      originalUrl: url,
-      shortCode,
-      expiresAt: expiresAt || null,
-    })
-    .returning()
-    .get();
+  const record: LinkRecord = {
+    shortCode,
+    originalUrl: url,
+    createdAt: new Date().toISOString(),
+    expiresAt: expiresAt || null,
+    clickCount: 0,
+  };
 
-  return result;
+  await urlStore.put(`link:${shortCode}`, JSON.stringify(record));
+  return record;
 }
 
-export function findByCode(code: string) {
-  return db
-    .select()
-    .from(links)
-    .where(eq(links.shortCode, code))
-    .get();
+export async function findByCode(
+  urlStore: KVNamespace,
+  code: string
+): Promise<LinkRecord | null> {
+  return urlStore.get<LinkRecord>(`link:${code}`, "json");
 }
 
-export function isExpired(link: { expiresAt: string | null }) {
+export function isExpired(link: { expiresAt: string | null }): boolean {
   if (!link.expiresAt) return false;
   return new Date(link.expiresAt) < new Date();
 }
 
-export function recordClick(
-  linkId: number,
+export async function recordClick(
+  urlStore: KVNamespace,
+  clickStore: KVNamespace,
+  shortCode: string,
   referrer: string | null,
   userAgent: string | null,
   ipAddress: string | null
-) {
-  db.update(links)
-    .set({ clickCount: sql`${links.clickCount} + 1` })
-    .where(eq(links.id, linkId))
-    .run();
+): Promise<void> {
+  const newClick: ClickRecord = {
+    clickedAt: new Date().toISOString(),
+    referrer,
+    userAgent,
+    ipAddress,
+  };
 
-  db.insert(clicks)
-    .values({ linkId, referrer, userAgent, ipAddress })
-    .run();
+  const [existingClicks, link] = await Promise.all([
+    clickStore.get<ClickRecord[]>(`clicks:${shortCode}`, "json"),
+    urlStore.get<LinkRecord>(`link:${shortCode}`, "json"),
+  ]);
+
+  const clicks = [newClick, ...(existingClicks || [])].slice(0, 1000);
+  const tasks: Promise<void>[] = [
+    clickStore.put(`clicks:${shortCode}`, JSON.stringify(clicks)),
+  ];
+
+  if (link) {
+    link.clickCount += 1;
+    tasks.push(urlStore.put(`link:${shortCode}`, JSON.stringify(link)));
+  }
+
+  await Promise.all(tasks);
 }
 
-export function getStats(code: string) {
-  const link = db
-    .select()
-    .from(links)
-    .where(eq(links.shortCode, code))
-    .get();
+export async function getStats(
+  urlStore: KVNamespace,
+  clickStore: KVNamespace,
+  code: string
+): Promise<StatsResult | null> {
+  const [link, allClicks] = await Promise.all([
+    urlStore.get<LinkRecord>(`link:${code}`, "json"),
+    clickStore.get<ClickRecord[]>(`clicks:${code}`, "json"),
+  ]);
 
   if (!link) return null;
 
-  const recentClicks = db
-    .select()
-    .from(clicks)
-    .where(eq(clicks.linkId, link.id))
-    .orderBy(desc(clicks.clickedAt))
-    .limit(50)
-    .all();
+  const clicks = allClicks || [];
+  const recentClicks = clicks.slice(0, 50);
 
-  const referrerStats = db
-    .select({
-      referrer: clicks.referrer,
-      count: sql<number>`count(*)`.as("count"),
-    })
-    .from(clicks)
-    .where(eq(clicks.linkId, link.id))
-    .groupBy(clicks.referrer)
-    .orderBy(desc(sql`count(*)`))
-    .limit(10)
-    .all();
+  const counts = new Map<string | null, number>();
+  for (const c of clicks) {
+    counts.set(c.referrer, (counts.get(c.referrer) || 0) + 1);
+  }
+  const referrerStats: ReferrerStat[] = Array.from(counts.entries())
+    .map(([referrer, count]) => ({ referrer, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
 
   return { link, recentClicks, referrerStats };
 }

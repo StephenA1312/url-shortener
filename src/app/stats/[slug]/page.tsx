@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getStats, isExpired } from "@/backend/lib/links";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -37,7 +38,8 @@ export default async function StatsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const stats = getStats(slug);
+  const { env } = getCloudflareContext();
+  const stats = await getStats(env.URL_STORE, env.CLICK_STORE, slug);
 
   if (!stats) notFound();
 
@@ -130,9 +132,9 @@ export default async function StatsPage({
                   </tr>
                 </thead>
                 <tbody className="text-zinc-700 dark:text-zinc-300">
-                  {recentClicks.map((click) => (
+                  {recentClicks.map((click, i) => (
                     <tr
-                      key={click.id}
+                      key={i}
                       className="border-b border-zinc-200/50 dark:border-zinc-800/50 last:border-0"
                     >
                       <td className="py-2 pr-4 text-zinc-400 dark:text-zinc-500 whitespace-nowrap">

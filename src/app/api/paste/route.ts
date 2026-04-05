@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createPaste } from "@/backend/lib/pastes";
-import { checkRateLimit } from "@/backend/lib/rate-limit";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 export async function POST(request: NextRequest) {
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  const { allowed, retryAfter } = checkRateLimit(ip);
-
-  if (!allowed) {
-    return NextResponse.json(
-      { error: "Too many requests. Please try again later." },
-      { status: 429, headers: { "Retry-After": String(retryAfter) } }
-    );
-  }
-
   try {
     const body = await request.json();
     const { content, customSlug, viewOnce } = body;
@@ -32,7 +21,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const paste = createPaste(
+    const { env } = getCloudflareContext();
+    const paste = await createPaste(
+      env.URL_STORE,
       content,
       customSlug || undefined,
       viewOnce || false
