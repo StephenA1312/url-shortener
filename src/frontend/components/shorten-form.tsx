@@ -40,7 +40,7 @@ export function ShortenForm() {
         body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      const data = (await res.json()) as ShortenResult & { error?: string };
 
       if (!res.ok) {
         setError(data.error || "Something went wrong.");
