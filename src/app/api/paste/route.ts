@@ -4,8 +4,11 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = (await request.json()) as Record<string, unknown>;
-    const { content, customSlug, viewOnce } = body;
+    const { content, customSlug, viewOnce } = (await request.json()) as {
+      content?: string;
+      customSlug?: string;
+      viewOnce?: boolean;
+    };
 
     if (!content || typeof content !== "string") {
       return NextResponse.json(
