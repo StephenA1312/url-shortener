@@ -40,7 +40,6 @@ RUN adduser --system --uid 1001 nextjs
 # Copy standalone output
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 # Create writable data directory for SQLite
 RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
